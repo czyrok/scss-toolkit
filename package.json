@@ -1,0 +1,14 @@
+{
+  "name": "scss-toolkit",
+  "version": "1.0.0",
+  "author": "czyrok",
+  "license": "MIT",
+  "description": "",
+  "keywords": [
+    "scss"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/czyrok/socket.io-controller.git"
+  }
+}

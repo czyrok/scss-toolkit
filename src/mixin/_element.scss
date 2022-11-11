@@ -1,0 +1,204 @@
+@use '../function/misc';
+@use '../function/util';
+
+@mixin elementAccentHandler($has, $two: false, $value: 0, $valueDiff: 0) {
+    @if $has {
+        @if $two {
+            [data-css-accent-container]:has(&) {
+                @content ($value + $valueDiff);
+            }
+
+            @content ($value);
+        } @else {
+            @if $_forAccent == 0 {
+                [data-css-accent-container]:has(&) {
+                    @content;
+                }
+            } @else if $_forAccent == 1 {
+                &[data-css-accent] {
+                    @content;
+                }
+            } @else {
+                @content;
+            }
+        }
+    } @else {
+        @content;
+    }
+}
+
+@mixin useWith($map) {
+    @content ($map);
+}
+
+@mixin createElement($element) {
+    $_forAccent: null !global;
+
+    $_hasAccentMode: false !global;
+    $_element: $element !global;
+
+    [data-css-#{$element}] {
+        @content;
+    }
+
+    $_hasAccentMode: null !global;
+    $_element: null !global;
+}
+
+@mixin createSubsection($type) {
+    &[data-css-#{$type}] {
+        @content;
+    }
+}
+
+@mixin createTag($type, $selector) {
+    &#{$selector}[data-css-#{$type}] {
+        @content;
+    }
+}
+
+@mixin setAttrBorderRadius($args...) {
+    @if ($_hasAccentMode) {
+        @each $arg in $args {
+            &[data-css-border-radius=#{util.get($arg, 'name')}] {
+                @include elementAccentHandler(
+                        $has: $_hasAccentMode,
+                        $two: true,
+                        $value: util.get($arg, 'value'),
+                        $valueDiff: util.get($arg, 'diff')
+                    )
+                    using($value) {
+                    border-radius: $value;
+                    @content;
+                }
+            }
+        }
+    } @else {
+        @each $arg in $args {
+            &[data-css-border-radius=#{util.get($arg, 'name')}] {
+                border-radius: util.get($arg, 'value');
+                @content;
+            }
+        }
+    }
+}
+
+@mixin setAttrAccentOutContent() {
+    $_hasAccentMode: true !global;
+    $_forAccent: 0 !global;
+
+    @include defineContent() {
+        @content;
+    }
+
+    $_forAccent: null !global;
+}
+
+@mixin setAttrAccentContent() {
+    $_hasAccentMode: true !global;
+    $_forAccent: 1 !global;
+
+    @include defineContent() {
+        @content;
+    }
+
+    $_forAccent: null !global;
+}
+
+@mixin defineAttrCondition($type, $condList...) {
+    $condLine: ':is(';
+
+    $first: true;
+
+    @each $cond in $condList {
+        @if ($first == false) {
+            $condLine: $condLine + ', ';
+        }
+
+        $condLine: $condLine + '[#{$type}="#{$cond}"]';
+
+        $first: false;
+    }
+
+    $condLine: $condLine + ')';
+
+    @include elementAccentHandler($_hasAccentMode) {
+        &#{$condLine} {
+            @content;
+        }
+    }
+}
+
+@mixin defineContent() {
+    $_self: #{&} !global;
+
+    @include elementAccentHandler($_hasAccentMode) {
+        @content;
+    }
+
+    $_self: null !global;
+}
+
+@mixin defineContentWithoutAccent() {
+    $_self: #{&} !global;
+
+    @content;
+
+    $_self: null !global;
+}
+
+@mixin defineAnimation($name) {
+    @keyframes #{$_self}#{$name} {
+        @content;
+    }
+}
+
+@mixin defineWithBefore($name) {
+    #{$name} & {
+        @content;
+    }
+}
+
+@mixin defineProperty($property, $notDisabled: true) {
+    @include elementAccentHandler($_hasAccentMode) {
+        @if $notDisabled == true {
+            &:not(:disabled)#{$property} {
+                @content;
+            }
+        } @else {
+            &#{$property} {
+                @content;
+            }
+        }
+    }
+}
+
+@mixin definePropertyHover() {
+    @include defineProperty(':hover') {
+        @content;
+    }
+}
+
+@mixin definePropertyActive() {
+    @include defineProperty(':active') {
+        @content;
+    }
+
+    @include defineProperty('.active') {
+        @content;
+    }
+}
+
+@mixin definePropertyFocus() {
+    @include defineProperty(':focus') {
+        @content;
+    }
+}
+
+@mixin definePropertyDisabled($arg) {
+    @include defineProperty(':disabled', false) {
+        cursor: not-allowed !important;
+        opacity: $arg !important;
+        @content;
+    }
+}

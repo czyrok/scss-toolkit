@@ -1,0 +1,47 @@
+@use '../function/util';
+
+$_map: () !default;
+
+@mixin themeHandler($same, $path...) {
+    $colorVars: () !global;
+
+    @if $same {
+        $colorVars: map-merge($colorVars, util.get($_map, 'same', $path...)) !global;
+
+        & {
+            @content();
+        }
+    } @else {
+        $colorVars: map-merge($colorVars, util.get($_map, 'light', $path...)) !global;
+
+        & {
+            @content();
+        }
+
+        $colorVars: map-merge($colorVars, util.get($_map, 'dark', $path...)) !global;
+
+        @media (prefers-color-scheme: dark) {
+            @content();
+        }
+
+        $colorVars: map-merge($colorVars, util.get($_map, 'light', $path...)) !global;
+
+        :host-context([data-css-theme-light]) &,
+        [data-css-theme-light] & {
+            @content();
+        }
+
+        $colorVars: map-merge($colorVars, util.get($_map, 'dark', $path...)) !global;
+
+        :host-context([data-css-theme-dark]) &,
+        [data-css-theme-dark] & {
+            @content();
+        }
+    }
+
+    $colorVars: null !global;
+}
+
+@function get($args...) {
+    @return util.get($colorVars, $args...);
+}

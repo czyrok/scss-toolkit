@@ -1,0 +1,11 @@
+@use 'sass:map';
+
+@function get($map, $args...) {
+    $data: map-get($map, $args...);
+
+    @if ($data == null) {
+        @error 'Path /#{$args}/ doesn\'t exist on map';
+    }
+
+    @return $data;
+}
