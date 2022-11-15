@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 @use '../function/util';
 
 $_map: () !default;
@@ -44,4 +46,8 @@ $_map: () !default;
 
 @function get($args...) {
     @return util.get($colorVars, $args...);
+}
+
+@function append($map) {
+    @return map-merge($_map, $map);
 }
