@@ -18,10 +18,6 @@
                 &[data-css-accent] {
                     @content;
                 }
-
-                [data-css-accent] & {
-                    @content;
-                }
             } @else {
                 @content;
             }
