@@ -1,5 +1,3 @@
-@use 'sass:map';
-
 @function get($map, $args...) {
     $data: map-get($map, $args...);
 
