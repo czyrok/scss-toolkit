@@ -27,10 +27,6 @@
     }
 }
 
-@mixin useWith($map) {
-    @content ($map);
-}
-
 @mixin createElement($element) {
     $_forAccent: null !global;
 

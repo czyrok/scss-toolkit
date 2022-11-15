@@ -49,5 +49,7 @@ $_map: () !default;
 }
 
 @function append($map) {
-    @return map-merge($_map, $map);
+    $_map: map.deep-merge($_map, $map) !global;
+
+    @return null;
 }
