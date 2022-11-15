@@ -101,6 +101,10 @@
     $_forAccent: null !global;
 }
 
+@mixin removeAttrAccent() {
+    $_hasAccentMode: false !global;
+}
+
 @mixin defineAttrCondition($type, $condList...) {
     $condLine: ':is(';
 
@@ -131,14 +135,6 @@
     @include elementAccentHandler($_hasAccentMode) {
         @content;
     }
-
-    $_self: null !global;
-}
-
-@mixin defineContentWithoutAccent() {
-    $_self: #{&} !global;
-
-    @content;
 
     $_self: null !global;
 }
