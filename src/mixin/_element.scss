@@ -1,6 +1,8 @@
 @use '../function/misc';
 @use '../function/util';
 
+$_counter: 0 !global;
+
 @mixin elementAccentHandler($has, $two: false, $value: 0, $valueDiff: 0) {
     @if $has {
         @if $two {
@@ -32,6 +34,9 @@
 }
 
 @mixin createElement($element) {
+    $_counter: $_counter + 1 !global;
+    $_currentCounter: $_counter !global;
+
     $_forAccent: null !global;
 
     $_hasAccentMode: false !global;
@@ -46,12 +51,18 @@
 }
 
 @mixin createSubsection($type) {
+    $_counter: $_counter + 1 !global;
+    $_currentCounter: $_counter !global;
+
     &[data-css-#{$type}] {
         @content;
     }
 }
 
 @mixin createTag($type, $selector) {
+    $_counter: $_counter + 1 !global;
+    $_currentCounter: $_counter !global;
+
     &#{$selector}[data-css-#{$type}] {
         @content;
     }
@@ -144,7 +155,7 @@
 }
 
 @mixin defineAnimation($name) {
-    @keyframes #{$_self}#{$name} {
+    @keyframes #{$name}#{$_currentCounter} {
         @content;
     }
 }
@@ -197,4 +208,8 @@
         opacity: $arg !important;
         @content;
     }
+}
+
+@function getAnimation($name) {
+    @return #{$name}#{$_currentCounter};
 }
